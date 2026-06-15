@@ -199,11 +199,6 @@ window.SCREENS.push({ name: "21 · चैट · दिन पक्का कर
   <div class="chat-body">
     ${P4_STICKY}
 
-    <!-- plausible prior history -->
-    <div class="msg msg-bot">
-      <div class="bubble">बहुत बढ़िया, आपकी <b>बुकिंग कन्फर्म</b> हो गई है। <b>2-3 दिन</b> में आपके घर पर नेट लग जाएगा।<div class="b-time">10:12 AM</div></div>
-    </div>
-
     <!-- main TEXT_CTA message -->
     <div class="msg msg-bot">
       <div class="bubble" style="padding-bottom:0;">
