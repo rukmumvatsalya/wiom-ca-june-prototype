@@ -3,266 +3,169 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Wiom · CA June Sprint — Clickable Prototype</title>
+<title>Wiom · CA June Sprint 2026 — Coded Prototype</title>
+<link rel="stylesheet" href="app.css" />
 <style>
-  :root{
-    --pink:#ED1B76;
-    --ink:#1A1A1A;
-    --muted:#8A8A8A;
-    --line:#EAEAEA;
-    --bg:#F4F4F6;
-    --frame:#111;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html,body{height:100%;}
-  body{
-    font-family:'Noto Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:
-      radial-gradient(1200px 600px at 50% -10%, #fff 0%, var(--bg) 60%);
-    color:var(--ink);
-    min-height:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    -webkit-font-smoothing:antialiased;
-  }
-
-  /* ---- top bar ---- */
-  header{
-    width:100%;
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:14px 22px;
-    border-bottom:1px solid var(--line);
-    background:rgba(255,255,255,.7);
-    backdrop-filter:blur(8px);
-    position:sticky;top:0;z-index:20;
-  }
-  .logo{
-    font-weight:800;letter-spacing:-.4px;font-size:17px;color:var(--pink);
-  }
-  .logo span{color:var(--ink);font-weight:600;}
-  .subtitle{font-size:12.5px;color:var(--muted);}
+  body{font-family:'Noto Sans','Noto Sans Devanagari',-apple-system,'Segoe UI',sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%,#fff 0%,#F1EDF7 60%);
+    color:#161021;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+  header.top{width:100%;display:flex;align-items:center;gap:14px;padding:14px 22px;
+    border-bottom:1px solid #E8E4F0;background:rgba(255,255,255,.75);backdrop-filter:blur(8px);
+    position:sticky;top:0;z-index:30;}
+  .logo{font-weight:800;letter-spacing:-.4px;font-size:17px;color:#D9008D;}
+  .logo span{color:#161021;font-weight:600;}
+  .subtitle{font-size:12.5px;color:#8A8A8A;}
   .spacer{flex:1;}
-  .btn{
-    border:1px solid var(--line);background:#fff;color:var(--ink);
-    font-size:13px;font-weight:600;border-radius:999px;padding:8px 14px;cursor:pointer;
-    transition:.15s;display:inline-flex;align-items:center;gap:6px;
-  }
-  .btn:hover{border-color:#ccc;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-  .btn.primary{background:var(--pink);color:#fff;border-color:var(--pink);}
-  .btn.primary:hover{background:#d11468;}
-
-  /* ---- stage ---- */
-  .stage{
-    flex:1;display:flex;align-items:center;justify-content:center;gap:30px;
-    padding:34px 20px 20px;width:100%;
-  }
-  .navarrow{
-    border:none;background:#fff;border:1px solid var(--line);
-    width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:20px;color:var(--ink);
-    display:flex;align-items:center;justify-content:center;transition:.15s;flex:none;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
-  }
+  .tbtn{border:1px solid #E8E4F0;background:#fff;color:#161021;font-size:13px;font-weight:600;
+    border-radius:999px;padding:8px 14px;cursor:pointer;transition:.15s;}
+  .tbtn:hover{border-color:#ccc;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;gap:30px;padding:34px 20px;width:100%;}
+  .stage.hide{display:none;}
+  .navarrow{border:1px solid #E8E4F0;background:#fff;width:48px;height:48px;border-radius:50%;
+    cursor:pointer;font-size:20px;color:#161021;display:flex;align-items:center;justify-content:center;
+    transition:.15s;flex:none;box-shadow:0 2px 10px rgba(0,0,0,.05);}
   .navarrow:hover{box-shadow:0 4px 16px rgba(0,0,0,.12);transform:translateY(-1px);}
   .navarrow:disabled{opacity:.3;cursor:default;box-shadow:none;transform:none;}
-
-  /* ---- screen (no device frame) ---- */
-  .phone-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;}
-  .screen{
-    position:relative;width:340px;height:680px;border-radius:18px;overflow:hidden;
-    background:#fff;cursor:pointer;
-    box-shadow:0 18px 50px rgba(0,0,0,.18),0 2px 10px rgba(0,0,0,.10);
-    border:1px solid var(--line);
-  }
-  .screen img{
-    width:100%;height:100%;object-fit:cover;object-position:top center;display:block;
-    user-select:none;-webkit-user-drag:none;
-  }
-  /* back tap zone (left 22%) */
-  .backzone{position:absolute;left:0;top:0;width:22%;height:100%;z-index:4;cursor:w-resize;}
-  .nexthint{
-    position:absolute;right:12px;bottom:12px;z-index:5;
-    background:rgba(237,27,118,.92);color:#fff;font-size:11px;font-weight:700;
-    padding:7px 11px;border-radius:999px;pointer-events:none;
-    box-shadow:0 4px 12px rgba(237,27,118,.4);
-    display:flex;align-items:center;gap:5px;
-    animation:pulse 2.2s ease-in-out infinite;
-  }
-  @keyframes pulse{0%,100%{opacity:.55;}50%{opacity:1;}}
-  .tapflash{
-    position:absolute;inset:0;background:rgba(237,27,118,.10);opacity:0;pointer-events:none;z-index:3;
-  }
-
-  /* ---- meta under phone ---- */
+  .stack{display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .device{width:340px;height:680px;border-radius:18px;overflow:hidden;background:#FAF9FC;position:relative;
+    box-shadow:0 18px 50px rgba(0,0,0,.18),0 2px 10px rgba(0,0,0,.10);border:1px solid #E8E4F0;cursor:pointer;}
+  .backzone{position:absolute;left:0;top:0;width:20%;height:100%;z-index:50;cursor:w-resize;}
+  .nexthint{position:absolute;right:12px;bottom:12px;z-index:60;background:rgba(217,0,141,.92);color:#fff;
+    font-size:11px;font-weight:700;padding:7px 11px;border-radius:999px;pointer-events:none;
+    box-shadow:0 4px 12px rgba(217,0,141,.4);animation:hintpulse 2.2s ease-in-out infinite;}
+  @keyframes hintpulse{0%,100%{opacity:.5}50%{opacity:1}}
   .meta{display:flex;flex-direction:column;align-items:center;gap:10px;}
-  .counter{font-size:13px;color:var(--muted);font-weight:600;}
-  .counter b{color:var(--ink);}
-  .scname{font-size:12px;color:var(--muted);max-width:330px;text-align:center;}
+  .counter{font-size:13px;color:#8A8A8A;font-weight:600;}
+  .counter b{color:#161021;}
+  .scname{font-size:12px;color:#8A8A8A;max-width:340px;text-align:center;}
   .dots{display:flex;gap:5px;flex-wrap:wrap;max-width:340px;justify-content:center;}
   .dot{width:7px;height:7px;border-radius:50%;background:#d6d6db;cursor:pointer;transition:.15s;}
-  .dot.active{background:var(--pink);transform:scale(1.35);}
+  .dot.active{background:#D9008D;transform:scale(1.35);}
   .dot:hover{background:#b9b9c0;}
-
-  /* ---- overview grid ---- */
-  .overview{
-    display:none;width:100%;padding:24px 26px 60px;
-    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px;
-  }
+  .overview{display:none;width:100%;padding:24px 26px 60px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:22px;}
   .overview.show{display:grid;}
-  .stage.hide{display:none;}
-  .ov-card{
-    border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;cursor:pointer;
-    transition:.15s;position:relative;
-  }
-  .ov-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.12);transform:translateY(-2px);border-color:#ddd;}
-  .ov-card img{width:100%;display:block;aspect-ratio:1/2;object-fit:cover;object-position:top center;}
-  .ov-num{
-    position:absolute;top:8px;left:8px;background:rgba(0,0,0,.7);color:#fff;
-    font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;
-  }
-  footer{font-size:11.5px;color:var(--muted);padding:6px 0 22px;text-align:center;}
-  kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;
-    padding:1px 6px;font-size:11px;font-family:inherit;color:var(--ink);}
+  .ov-card{cursor:pointer;}
+  .ov-thumb{width:100%;aspect-ratio:340/680;border-radius:12px;border:1px solid #E8E4F0;overflow:hidden;
+    position:relative;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.08);transition:.15s;}
+  .ov-card:hover .ov-thumb{box-shadow:0 10px 26px rgba(0,0,0,.14);transform:translateY(-2px);}
+  .ov-scaler{position:absolute;top:0;left:0;width:340px;height:680px;transform-origin:top left;}
+  .ov-cap{font-size:12px;color:#5C5570;margin-top:8px;font-weight:600;}
+  .ov-cap b{color:#161021;}
+  footer{font-size:11.5px;color:#8A8A8A;padding:6px 0 22px;text-align:center;}
+  kbd{background:#fff;border:1px solid #E8E4F0;border-bottom-width:2px;border-radius:5px;padding:1px 6px;font-size:11px;color:#161021;}
 </style>
 </head>
 <body>
-  <header>
+  <header class="top">
     <div class="logo">wiom<span> · prototype</span></div>
-    <div class="subtitle">CA June Sprint 2026 — flow “copy of G”</div>
+    <div class="subtitle">CA June Sprint 2026 — flow “copy of G” · coded</div>
     <div class="spacer"></div>
-    <button class="btn" id="overviewBtn">▦ All screens</button>
-    <button class="btn" id="restartBtn">↺ Restart</button>
+    <button class="tbtn" id="overviewBtn">▦ All screens</button>
+    <button class="tbtn" id="restartBtn">↺ Restart</button>
   </header>
 
   <div class="stage" id="stage">
     <button class="navarrow" id="prevBtn" title="Previous (←)">‹</button>
-
-    <div class="phone-wrap">
-      <div class="screen" id="screen">
-        <img id="frameImg" alt="screen" draggable="false" />
+    <div class="stack">
+      <div class="device" id="device">
         <div class="backzone" id="backzone" title="Tap to go back"></div>
-        <div class="tapflash" id="tapflash"></div>
         <div class="nexthint" id="nexthint">Tap to continue ›</div>
       </div>
-
       <div class="meta">
         <div class="counter">Screen <b id="curNum">1</b> / <span id="total">29</span></div>
         <div class="scname" id="scName"></div>
         <div class="dots" id="dots"></div>
       </div>
     </div>
-
     <button class="navarrow" id="nextBtn" title="Next (→)">›</button>
   </div>
 
   <div class="overview" id="overview"></div>
 
   <footer>
-    Tap the screen to advance · tap the left edge to go back · <kbd>←</kbd> <kbd>→</kbd> arrow keys · click a dot to jump
+    Coded HTML screens · tap to advance · tap left edge to go back · <kbd>←</kbd> <kbd>→</kbd> arrow keys · click a dot to jump
   </footer>
 
-<script>
-  // Flow order is left→right by canvas position in the Figma section.
-  const SCREENS = [
-    {f:"screens/screen-01.png", name:"Splash"},
-    {f:"screens/screen-02.png", name:"Splash"},
-    {f:"screens/screen-03.png", name:"Home / entry"},
-    {f:"screens/screen-04.png", name:"Screen 14350"},
-    {f:"screens/screen-05.png", name:"Screen 14352"},
-    {f:"screens/screen-06.png", name:"Screen 14351"},
-    {f:"screens/screen-07.png", name:"Screen 14353"},
-    {f:"screens/screen-08.png", name:"Screen 14354"},
-    {f:"screens/screen-09.png", name:"Screen 14355"},
-    {f:"screens/screen-10.png", name:"Loader"},
-    {f:"screens/screen-11.png", name:"Screen 14356"},
-    {f:"screens/screen-12.png", name:"Screen 14357"},
-    {f:"screens/screen-13.png", name:"Step screen"},
-    {f:"screens/screen-14.png", name:"Step screen"},
-    {f:"screens/screen-15.png", name:"Step screen"},
-    {f:"screens/screen-16.png", name:"Step screen"},
-    {f:"screens/screen-17.png", name:"Step screen"},
-    {f:"screens/screen-18.png", name:"Step screen"},
-    {f:"screens/screen-19.png", name:"Step screen"},
-    {f:"screens/screen-20.png", name:"Step screen"},
-    {f:"screens/screen-21.png", name:"LCO App 3364"},
-    {f:"screens/screen-22.png", name:"LCO App 3365"},
-    {f:"screens/screen-23.png", name:"LCO App 3366"},
-    {f:"screens/screen-24.png", name:"LCO App 3371"},
-    {f:"screens/screen-25.png", name:"LCO App 3363"},
-    {f:"screens/screen-26.png", name:"LCO App 3372"},
-    {f:"screens/screen-27.png", name:"Card"},
-    {f:"screens/screen-28.png", name:"Card"},
-    {f:"screens/screen-29.png", name:"Screen 14358 — End"},
-  ];
+<!-- screen definitions: each part file pushes onto window.SCREENS in order -->
+<script>window.SCREENS = [];</script>
+<script src="parts/part-1.js"></script>
+<script src="parts/part-2.js"></script>
+<script src="parts/part-3.js"></script>
+<script src="parts/part-4.js"></script>
+<script src="parts/part-5.js"></script>
 
+<script>
+  const S = window.SCREENS;
   let i = 0;
-  const img = document.getElementById('frameImg');
+  const device = document.getElementById('device');
+  const backzone = document.getElementById('backzone');
+  const nexthint = document.getElementById('nexthint');
   const curNum = document.getElementById('curNum');
   const scName = document.getElementById('scName');
   const dotsEl = document.getElementById('dots');
-  const flash = document.getElementById('tapflash');
-  const nexthint = document.getElementById('nexthint');
-  document.getElementById('total').textContent = SCREENS.length;
+  document.getElementById('total').textContent = S.length;
 
-  // build dots
-  SCREENS.forEach((s,idx)=>{
-    const d=document.createElement('div');
-    d.className='dot';d.title=(idx+1)+'. '+s.name;
-    d.onclick=(e)=>{e.stopPropagation();go(idx);};
-    dotsEl.appendChild(d);
+  S.forEach((s,idx)=>{
+    const d=document.createElement('div');d.className='dot';d.title=(idx+1)+'. '+s.name;
+    d.onclick=(e)=>{e.stopPropagation();go(idx);};dotsEl.appendChild(d);
   });
   const dots=[...dotsEl.children];
 
-  // preload
-  SCREENS.forEach(s=>{const im=new Image();im.src=s.f;});
+  function screenMarkup(s){ return '<div class="app">'+s.html+'</div>'; }
 
   function render(){
-    img.src = SCREENS[i].f;
-    curNum.textContent = i+1;
-    scName.textContent = SCREENS[i].name;
+    // rebuild device contents, keep backzone + hint
+    device.querySelectorAll('.app').forEach(n=>n.remove());
+    const wrap=document.createElement('div');
+    wrap.innerHTML = screenMarkup(S[i]);
+    device.insertBefore(wrap.firstElementChild, backzone);
+    curNum.textContent=i+1;
+    scName.textContent=S[i].name;
     dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));
-    document.getElementById('prevBtn').disabled = i===0;
-    document.getElementById('nextBtn').disabled = i===SCREENS.length-1;
-    nexthint.style.display = i===SCREENS.length-1 ? 'none':'flex';
+    document.getElementById('prevBtn').disabled=i===0;
+    document.getElementById('nextBtn').disabled=i===S.length-1;
+    nexthint.style.display=i===S.length-1?'none':'block';
   }
-  function go(n){
-    i = Math.max(0, Math.min(SCREENS.length-1, n));
-    render();
-  }
-  function next(){ if(i<SCREENS.length-1){ i++; render(); flashTap(); } }
-  function prev(){ if(i>0){ i--; render(); } }
-  function flashTap(){ flash.style.transition='none';flash.style.opacity='1';
-    requestAnimationFrame(()=>{flash.style.transition='opacity .35s';flash.style.opacity='0';}); }
+  function go(n){i=Math.max(0,Math.min(S.length-1,n));render();}
+  function next(){if(i<S.length-1){i++;render();}}
+  function prev(){if(i>0){i--;render();}}
 
-  // interactions
-  document.getElementById('screen').addEventListener('click', next);
-  document.getElementById('backzone').addEventListener('click', (e)=>{e.stopPropagation();prev();});
-  document.getElementById('nextBtn').addEventListener('click', next);
-  document.getElementById('prevBtn').addEventListener('click', prev);
-  document.getElementById('restartBtn').addEventListener('click', ()=>go(0));
-
+  device.addEventListener('click',next);
+  backzone.addEventListener('click',(e)=>{e.stopPropagation();prev();});
+  document.getElementById('nextBtn').addEventListener('click',next);
+  document.getElementById('prevBtn').addEventListener('click',prev);
+  document.getElementById('restartBtn').addEventListener('click',()=>go(0));
   document.addEventListener('keydown',(e)=>{
     if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next();}
     if(e.key==='ArrowLeft'){e.preventDefault();prev();}
-    if(e.key==='Home')go(0);
-    if(e.key==='End')go(SCREENS.length-1);
+    if(e.key==='Home')go(0); if(e.key==='End')go(S.length-1);
   });
 
   // overview
   const overview=document.getElementById('overview');
   const stage=document.getElementById('stage');
-  SCREENS.forEach((s,idx)=>{
-    const c=document.createElement('div');c.className='ov-card';
-    c.innerHTML=`<div class="ov-num">${idx+1}</div><img src="${s.f}" loading="lazy" alt="">`;
-    c.onclick=()=>{go(idx);toggleOverview(false);};
-    overview.appendChild(c);
-  });
+  function buildOverview(){
+    overview.innerHTML='';
+    S.forEach((s,idx)=>{
+      const card=document.createElement('div');card.className='ov-card';
+      card.innerHTML='<div class="ov-thumb"><div class="ov-scaler"><div class="app">'+s.html+'</div></div></div>'+
+        '<div class="ov-cap"><b>'+(idx+1)+'.</b> '+s.name+'</div>';
+      card.onclick=()=>{go(idx);toggleOverview(false);};
+      overview.appendChild(card);
+    });
+    // scale thumbnails
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('.ov-thumb').forEach(t=>{
+        const sc=t.querySelector('.ov-scaler');
+        const f=t.clientWidth/340; sc.style.transform='scale('+f+')';
+      });
+    });
+  }
   function toggleOverview(show){
+    if(show)buildOverview();
     overview.classList.toggle('show',show);
     stage.classList.toggle('hide',show);
-    document.getElementById('overviewBtn').textContent = show? '⬅ Back to prototype':'▦ All screens';
+    document.getElementById('overviewBtn').textContent=show?'⬅ Back to prototype':'▦ All screens';
   }
   let ovOpen=false;
   document.getElementById('overviewBtn').addEventListener('click',()=>{ovOpen=!ovOpen;toggleOverview(ovOpen);});
