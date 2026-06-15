@@ -1,179 +1,195 @@
 /* ============================================================
-   Wiom prototype — part 1 (screens 1–6)
+   Wiom prototype — part 1 (screens 1–6: booking entry / serviceability)
+   Source of truth: feature/booking/.../ui/*.kt + core/common/.../components/*
+   Tokens & components: app.css
    ============================================================ */
 window.SCREENS = window.SCREENS || [];
 
-/* ---- screen 1: splash (faded intro) ---- */
-window.SCREENS.push({ name: "Splash — recharge intro (fade in)", html: `
+/* ---- screen 1: initial splash (SplashHomeScreen.kt, faded/loading state) ---- */
+window.SCREENS.push({ name: "Splash — initial (SplashHomeScreen.kt)", html: `
   <div class="statusbar"><span>04:35 PM</span><span class="sb-right"><span class="material-symbols-rounded">wifi</span><span class="material-symbols-rounded">signal_cellular_alt</span><span class="material-symbols-rounded">battery_horiz_075</span> 50%</span></div>
-  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:28px;opacity:.18;">
-    <div class="illus">
-      <svg width="170" height="170" viewBox="0 0 170 170" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="22" y="38" width="118" height="20" rx="8" fill="#E8E4F0"/>
-        <line x1="48" y1="26" x2="48" y2="50" stroke="#161021" stroke-width="9" stroke-linecap="round"/>
-        <line x1="81" y1="26" x2="81" y2="50" stroke="#161021" stroke-width="9" stroke-linecap="round"/>
-        <line x1="114" y1="26" x2="114" y2="50" stroke="#161021" stroke-width="9" stroke-linecap="round"/>
-        <rect x="22" y="55" width="118" height="78" rx="10" fill="#E8E4F0"/>
-        <rect x="34" y="138" width="30" height="22" rx="4" fill="#E8E4F0"/>
-        <rect x="72" y="138" width="18" height="22" rx="4" fill="#E8E4F0"/>
-        <rect x="98" y="138" width="38" height="22" rx="4" fill="#E8E4F0"/>
+  <div class="topbar"><div class="tb-row"><div class="tb-spacer-brand"></div><div class="tb-spacer"></div></div></div>
+  <div class="content-center" style="opacity:.18;">
+    <div class="illus" style="margin-bottom:32px;">
+      <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="28" y="40" width="144" height="132" rx="14" fill="#EDEAF5"/>
+        <rect x="28" y="40" width="144" height="34" rx="14" fill="#E3DEF0"/>
+        <rect x="58" y="28" width="12" height="30" rx="6" fill="#E3DEF0"/>
+        <rect x="94" y="28" width="12" height="30" rx="6" fill="#E3DEF0"/>
+        <rect x="130" y="28" width="12" height="30" rx="6" fill="#E3DEF0"/>
+        <rect x="50" y="92" width="22" height="22" rx="5" fill="#E3DEF0"/>
+        <rect x="89" y="92" width="22" height="22" rx="5" fill="#E3DEF0"/>
+        <rect x="128" y="92" width="22" height="22" rx="5" fill="#E3DEF0"/>
       </svg>
     </div>
-    <div>
-      <div class="h-lg" style="color:var(--t-disabled);">रिचार्ज वाला घर का नेट</div>
-      <div class="body-lg muted" style="margin-top:8px;">जब चाहिए, तब रिचार्ज।</div>
-    </div>
+    <div class="ty-t3-med c-pri">रिचार्ज वाला घर का नेट</div>
+    <div class="ty-b1 c-pri" style="margin-top:16px;">जब चाहिए, तब रिचार्ज।</div>
   </div>
 ` });
 
-/* ---- screen 2: splash with calendar + devices ---- */
-window.SCREENS.push({ name: "Splash — recharge वाला घर का नेट", html: `
+/* ---- screen 2: recharge splash, loaded (SplashHomeScreen.kt) ---- */
+window.SCREENS.push({ name: "Splash — recharge home (SplashHomeScreen.kt)", html: `
   <div class="statusbar"><span>04:35 PM</span><span class="sb-right"><span class="material-symbols-rounded">wifi</span><span class="material-symbols-rounded">signal_cellular_alt</span><span class="material-symbols-rounded">battery_horiz_075</span> 50%</span></div>
-  <div class="topbar"><span class="spacer"></span><span class="translate-chip">A<small>अ</small></span></div>
-  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:36px;">
+  <div class="topbar"><div class="tb-row"><div class="tb-spacer-brand"></div><div class="tb-spacer"></div><div class="tb-icon tb-icon-lang"><span class="material-symbols-rounded">translate</span></div></div></div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;padding-top:16px;">
+    <!-- splash_calendar (200dp): calendar with checkmarks + rupee -->
     <div class="illus">
-      <svg width="200" height="170" viewBox="0 0 200 170" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <line x1="56" y1="14" x2="56" y2="46" stroke="#161021" stroke-width="13" stroke-linecap="round"/>
-        <line x1="100" y1="14" x2="100" y2="46" stroke="#161021" stroke-width="13" stroke-linecap="round"/>
-        <line x1="144" y1="14" x2="144" y2="46" stroke="#161021" stroke-width="13" stroke-linecap="round"/>
-        <rect x="30" y="26" width="140" height="118" rx="14" fill="#fff" stroke="#161021" stroke-width="2.5"/>
-        <path d="M30 56 a14 14 0 0 1 14 -14 h112 a14 14 0 0 1 14 14 v8 H30 Z" fill="#2F6FDB"/>
-        <g>
-          <rect x="44" y="78" width="24" height="24" rx="5" fill="#DCE7F8"/>
-          <rect x="76" y="78" width="24" height="24" rx="5" fill="#2F6FDB"/>
-          <path d="M81 90 l4 4 l8 -9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <rect x="108" y="78" width="24" height="24" rx="5" fill="#DCE7F8"/>
-          <rect x="140" y="78" width="20" height="24" rx="5" fill="#DCE7F8"/>
-        </g>
-        <g>
-          <rect x="44" y="108" width="24" height="24" rx="5" fill="#DCE7F8"/>
-          <rect x="76" y="108" width="24" height="24" rx="5" fill="#2F6FDB"/>
-          <path d="M81 120 l4 4 l8 -9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <rect x="108" y="108" width="24" height="24" rx="5" fill="#2F6FDB"/>
-          <path d="M113 120 l4 4 l8 -9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <rect x="140" y="108" width="20" height="24" rx="5" fill="#2F6FDB"/>
-          <path d="M144 120 l4 4 l8 -9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </g>
-        <text x="56" y="136" text-anchor="middle" font-size="18" fill="#2F6FDB" font-family="Noto Sans">₹</text>
+      <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="24" y="44" width="152" height="124" rx="14" fill="#FFFFFF" stroke="#161021" stroke-width="3"/>
+        <path d="M24 58a14 14 0 0 1 14-14h124a14 14 0 0 1 14 14v18H24z" fill="#2E6FD6"/>
+        <rect x="56" y="30" width="13" height="32" rx="6.5" fill="#161021"/>
+        <rect x="93" y="30" width="13" height="32" rx="6.5" fill="#161021"/>
+        <rect x="131" y="30" width="13" height="32" rx="6.5" fill="#161021"/>
+        <rect x="44" y="92" width="26" height="26" rx="5" fill="#DCE7F8"/>
+        <rect x="79" y="92" width="26" height="26" rx="5" fill="#2E6FD6"/>
+        <path d="M85 105l4 4 7-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="114" y="92" width="26" height="26" rx="5" fill="#DCE7F8"/>
+        <rect x="44" y="124" width="26" height="26" rx="5" fill="#DCE7F8"/>
+        <rect x="79" y="124" width="26" height="26" rx="5" fill="#2E6FD6"/>
+        <path d="M85 137l4 4 7-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="114" y="124" width="26" height="26" rx="5" fill="#2E6FD6"/>
+        <path d="M120 137l4 4 7-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="46" y="162" font-family="Noto Sans" font-size="22" font-weight="700" fill="#2E6FD6">₹</text>
       </svg>
     </div>
-    <div class="illus">
-      <svg width="240" height="80" viewBox="0 0 240 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <!-- laptop -->
-        <rect x="14" y="14" width="62" height="40" rx="4" stroke="#161021" stroke-width="2.5"/>
-        <rect x="24" y="22" width="42" height="24" rx="2" fill="#fff"/>
-        <path d="M6 62 h78 l-6 -8 H12 Z" fill="#fff" stroke="#161021" stroke-width="2.5" stroke-linejoin="round"/>
-        <!-- phone -->
-        <rect x="104" y="12" width="32" height="56" rx="6" stroke="#161021" stroke-width="2.5"/>
-        <circle cx="120" cy="60" r="2.5" fill="#161021"/>
-        <line x1="114" y1="18" x2="126" y2="18" stroke="#161021" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- tv -->
-        <rect x="160" y="16" width="70" height="44" rx="5" stroke="#161021" stroke-width="2.5"/>
-        <line x1="195" y1="60" x2="195" y2="68" stroke="#161021" stroke-width="2.5"/>
-        <line x1="182" y1="68" x2="208" y2="68" stroke="#161021" stroke-width="2.5" stroke-linecap="round"/>
+    <div style="height:32px;"></div>
+    <!-- splash_all_devices (60dp): laptop, phone, tv -->
+    <div class="illus" style="gap:24px;color:#161021;">
+      <svg width="74" height="56" viewBox="0 0 74 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="11" y="6" width="52" height="34" rx="3" stroke="#161021" stroke-width="3"/>
+        <rect x="30" y="36" width="14" height="4" fill="#161021"/>
+        <rect x="4" y="44" width="66" height="5" rx="2.5" fill="#161021"/>
+      </svg>
+      <svg width="34" height="56" viewBox="0 0 34 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="5" y="4" width="24" height="48" rx="4" stroke="#161021" stroke-width="3"/>
+        <circle cx="17" cy="46" r="2" fill="#161021"/>
+      </svg>
+      <svg width="74" height="56" viewBox="0 0 74 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="8" y="8" width="58" height="36" rx="3" stroke="#161021" stroke-width="3"/>
+        <rect x="30" y="44" width="14" height="4" fill="#161021"/>
+        <rect x="22" y="50" width="30" height="4" rx="2" fill="#161021"/>
       </svg>
     </div>
-    <div>
-      <div class="h-lg">रिचार्ज वाला घर का नेट</div>
-      <div class="body-lg muted" style="margin-top:10px;">जब चाहिए, तब रिचार्ज।</div>
-    </div>
+    <div style="height:32px;"></div>
+    <div class="ty-t3-med c-pri" style="text-align:center;width:100%;">रिचार्ज वाला घर का नेट</div>
+    <div class="ty-b1 c-pri" style="text-align:center;width:100%;margin-top:16px;">जब चाहिए, तब रिचार्ज।</div>
   </div>
-  <div class="btn-bar"><button class="btn btn-primary">मेरे इलाके में है या नहीं?</button></div>
-` });
-
-/* ---- screen 3: checking location (loader) ---- */
-window.SCREENS.push({ name: "Checking — आपकी जगह पर नेट चेक", html: `
-  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:28px;">
-    <div class="illus">
-      <svg width="130" height="150" viewBox="0 0 130 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M20 78 V40 a45 45 0 0 1 90 0 V78" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="9 9"/>
-        <line x1="20" y1="78" x2="110" y2="78" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="9 9"/>
-        <path d="M52 78 V58 a13 13 0 0 1 26 0 V78" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 7"/>
-      </svg>
-    </div>
-    <div class="h-md">आपकी जगह पर नेट चेक कर रहे हैं…</div>
+  <div class="btn-bar">
+    <button class="wbtn wbtn-booking">मेरे इलाके में है या नहीं?</button>
   </div>
 ` });
 
-/* ---- screen 4: location available ---- */
-window.SCREENS.push({ name: "Available — यहाँ घर का नेट लग सकता है", html: `
+/* ---- screen 3: location-check loader (LocationCheckLoadingScreen.kt) ---- */
+window.SCREENS.push({ name: "Loader — checking location (LocationCheckLoadingScreen.kt)", html: `
   <div class="statusbar"><span>04:35 PM</span><span class="sb-right"><span class="material-symbols-rounded">wifi</span><span class="material-symbols-rounded">signal_cellular_alt</span><span class="material-symbols-rounded">battery_horiz_075</span> 50%</span></div>
-  <div class="topbar"><span class="spacer"></span><span class="translate-chip">A<small>अ</small></span></div>
-  <div class="content" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding-top:60px;">
-    <div class="illus">
-      <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <line x1="62" y1="18" x2="62" y2="58" stroke="#161021" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M62 20 h28 l-7 8 l7 8 h-28 Z" fill="#2F6FDB"/>
-        <path d="M30 78 L75 44 L120 78" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <path d="M40 72 V120 H110 V72" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <path d="M64 120 V94 a11 11 0 0 1 22 0 V120" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;padding-top:120px;">
+    <!-- location_checking_loader (120dp): dashed house outline -->
+    <div class="illus" style="width:120px;height:120px;">
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M30 78V52a8 8 0 0 1 2.6-5.9L56 25a6 6 0 0 1 8 0l23.4 21.1A8 8 0 0 1 90 52v26" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 6"/>
+        <path d="M30 78h60" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 6"/>
+        <path d="M52 78V64a8 8 0 0 1 16 0v14" stroke="#161021" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 5"/>
       </svg>
     </div>
-    <div class="title-lg" style="font-weight:400;">Rajiv colony, Sector 40</div>
-    <div class="h-lg">यहाँ घर का नेट लग सकता है</div>
-    <button class="btn-link" style="margin-top:12px;">किसी और जगह के लिए चेक करें <span class="material-symbols-rounded ico-sm">chevron_right</span></button>
+    <div style="height:8px;"></div>
+    <div class="ty-t3-med c-pri" style="text-align:center;">आपकी जगह पर नेट चेक कर रहे हैं...</div>
   </div>
-  <div class="btn-bar"><button class="btn btn-primary">इसे कैसे चलाना है?</button></div>
 ` });
 
-/* ---- screen 5: how it works timeline ---- */
-window.SCREENS.push({ name: "How — रिचार्ज वाला नेट ऐसे चला सकते हैं", html: `
+/* ---- screen 4: serviceable (ServiceableScreen.kt) ---- */
+window.SCREENS.push({ name: "Serviceable — net can be set up (ServiceableScreen.kt)", html: `
   <div class="statusbar"><span>04:35 PM</span><span class="sb-right"><span class="material-symbols-rounded">wifi</span><span class="material-symbols-rounded">signal_cellular_alt</span><span class="material-symbols-rounded">battery_horiz_075</span> 50%</span></div>
-  <div class="topbar"><span class="material-symbols-rounded back">arrow_back</span><span class="spacer"></span><span class="tb-icon material-symbols-rounded">headset_mic</span><span class="translate-chip">A<small>अ</small></span></div>
+  <div class="topbar"><div class="tb-row"><div class="tb-spacer-brand"></div><div class="tb-spacer"></div><div class="tb-icon tb-icon-lang"><span class="material-symbols-rounded">translate</span></div></div></div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;padding-top:48px;">
+    <!-- location_serviceable_home (120dp): house with blue flag -->
+    <div class="illus" style="width:120px;height:120px;">
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M62 18v15" stroke="#161021" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M62 18h26l-6 7 6 7H62z" fill="#2E6FD6"/>
+        <path d="M30 86V58a6 6 0 0 1 2-4.5l24-21a6 6 0 0 1 8 0l24 21A6 6 0 0 1 90 58v28" stroke="#161021" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M30 86h60" stroke="#161021" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M52 86V68a8 8 0 0 1 16 0v18" stroke="#161021" stroke-width="2.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="ty-b1 c-pri" style="text-align:center;width:100%;">Rajiv colony, Sector 40</div>
+    <div style="height:12px;"></div>
+    <div class="ty-t3-med c-pri" style="text-align:center;width:100%;">यहाँ घर का नेट लग सकता है</div>
+    <div style="height:32px;"></div>
+    <div style="display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <span class="ty-b2 c-pri">किसी और जगह के लिए चेक करें</span>
+      <span class="material-symbols-rounded" style="font-size:24px;color:var(--icon-brand);">chevron_right</span>
+    </div>
+  </div>
+  <div class="btn-bar">
+    <button class="wbtn wbtn-booking">इसे कैसे चलाना है?</button>
+  </div>
+` });
+
+/* ---- screen 5: how-it-works timeline (HowItWorksScreen.kt) ---- */
+window.SCREENS.push({ name: "How it works — recharge net (HowItWorksScreen.kt)", html: `
+  <div class="statusbar"><span>04:35 PM</span><span class="sb-right"><span class="material-symbols-rounded">wifi</span><span class="material-symbols-rounded">signal_cellular_alt</span><span class="material-symbols-rounded">battery_horiz_075</span> 50%</span></div>
+  <div class="topbar"><div class="tb-row"><div class="tb-back"><span class="material-symbols-rounded">arrow_back</span></div><div class="tb-spacer"></div><div class="tb-icon"><span class="material-symbols-rounded">headset_mic</span></div><div class="tb-icon tb-icon-lang"><span class="material-symbols-rounded">translate</span></div></div>
+    <div class="tb-title" style="font-weight:500;">रिचार्ज वाला नेट ऐसे चला सकते हैं</div></div>
   <div class="content">
-    <h1 class="h-lg" style="margin:8px 0 24px;">रिचार्ज वाला नेट ऐसे चला सकते हैं</h1>
-    <div class="timeline">
+    <div style="height:24px;"></div>
+    <div class="tl">
       <div class="tl-step">
         <div class="tl-rail"><div class="tl-num">1</div><div class="tl-line"></div></div>
-        <div class="tl-body"><div class="tl-title">आपके घर में नेट बॉक्स लगता है</div></div>
+        <div class="tl-body"><div class="tl-title" style="font-weight:400;font-size:16px;line-height:24px;color:var(--pri-text);">आपके घर में नेट बॉक्स लगता है</div></div>
       </div>
       <div class="tl-step">
         <div class="tl-rail"><div class="tl-num">2</div><div class="tl-line"></div></div>
-        <div class="tl-body">
-          <div class="tl-title">जब चाहें, जितने दिन चाहें रिचार्ज करें</div>
-          <div class="tl-sub">बिल्कुल मोबाइल रिचार्ज की तरह</div>
-        </div>
+        <div class="tl-body"><div class="tl-title" style="font-weight:400;font-size:16px;line-height:24px;color:var(--pri-text);">जब चाहें, जितने दिन चाहें रिचार्ज करें</div>
+          <div class="tl-sub">बिल्कुल मोबाइल रिचार्ज की तरह</div></div>
       </div>
       <div class="tl-step">
         <div class="tl-rail"><div class="tl-num">3</div></div>
-        <div class="tl-body" style="padding-bottom:8px;">
-          <div class="tl-title">घर के सभी लोग चला सकते हैं</div>
-          <div class="tl-sub">8–12 डिवाइस आसानी से - मोबाइल, लैपटॉप, टीवी</div>
-        </div>
+        <div class="tl-body" style="padding-bottom:0;"><div class="tl-title" style="font-weight:400;font-size:16px;line-height:24px;color:var(--pri-text);">घर के सभी लोग चला सकते हैं</div>
+          <div class="tl-sub">8–12 डिवाइस आसानी से - मोबाइल, लैपटॉप, टीवी</div></div>
       </div>
     </div>
   </div>
   <div class="btn-bar">
-    <button class="btn btn-primary">मेरे घर पर कैसे शुरू होगा?</button>
-    <button class="btn-link">पहले से व्योम लगा हुआ है <span class="material-symbols-rounded ico-sm">chevron_right</span></button>
+    <button class="wbtn wbtn-booking">मेरे घर पर कैसे शुरू होगा?</button>
+    <div style="display:flex;align-items:center;justify-content:center;cursor:pointer;padding:8px 0;">
+      <span class="ty-b2 c-pri">पहले से व्योम लगा हुआ है</span>
+      <span class="material-symbols-rounded" style="font-size:24px;color:var(--icon-brand);">chevron_right</span>
+    </div>
   </div>
 ` });
 
-/* ---- screen 6: setup steps + recharge note ---- */
-window.SCREENS.push({ name: "Setup — घर पर नेट शुरू करने के लिए", html: `
+/* ---- screen 6: how-it-starts (HowItStartsScreen.kt, variant E/F) ---- */
+window.SCREENS.push({ name: "How it starts — visit + security fee (HowItStartsScreen.kt)", html: `
   <div class="statusbar"><span>04:35 PM</span><span class="sb-right"><span class="material-symbols-rounded">wifi</span><span class="material-symbols-rounded">signal_cellular_alt</span><span class="material-symbols-rounded">battery_horiz_075</span> 50%</span></div>
-  <div class="topbar"><span class="material-symbols-rounded back">arrow_back</span><span class="spacer"></span><span class="tb-icon material-symbols-rounded">headset_mic</span><span class="translate-chip">A<small>अ</small></span></div>
-  <div class="content" style="padding:0;">
-    <div style="padding:0 16px;">
-      <h1 class="h-lg" style="margin:8px 0 24px;">घर पर नेट शुरू करने के लिए</h1>
-      <div class="timeline">
-        <div class="tl-step">
-          <div class="tl-rail"><div class="tl-num">1</div><div class="tl-line"></div></div>
-          <div class="tl-body"><div class="tl-title">आपके घर पर एक विज़िट होती है -<br>नेट बॉक्स लगता है</div></div>
-        </div>
-        <div class="tl-step">
-          <div class="tl-rail"><div class="tl-num">2</div></div>
-          <div class="tl-body" style="padding-bottom:16px;">
-            <div class="tl-title">उस दिन नेट बॉक्स का ₹300 सिक्युरिटी फीस देना होता है</div>
-            <div style="margin-top:12px;background:var(--pos-subtle);color:var(--pos);border-radius:var(--r-md);padding:12px 14px;font-size:14px;font-weight:600;display:inline-block;">नेट बॉक्स लौटाने पर ₹300 वापस मिल जाते है</div>
+  <div class="topbar"><div class="tb-row"><div class="tb-back"><span class="material-symbols-rounded">arrow_back</span></div><div class="tb-spacer"></div><div class="tb-icon"><span class="material-symbols-rounded">headset_mic</span></div><div class="tb-icon tb-icon-lang"><span class="material-symbols-rounded">translate</span></div></div>
+    <div class="tb-title" style="font-weight:500;">घर पर नेट शुरू करने के लिए</div></div>
+  <div class="content">
+    <div style="height:24px;"></div>
+    <div class="tl">
+      <div class="tl-step">
+        <div class="tl-rail"><div class="tl-num">1</div><div class="tl-line"></div></div>
+        <div class="tl-body" style="padding-bottom:36px;"><div class="tl-title" style="font-weight:400;font-size:16px;line-height:24px;color:var(--pri-text);">आपके घर पर एक विज़िट होती है - नेट बॉक्स लगता है</div></div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-rail"><div class="tl-num">2</div></div>
+        <div class="tl-body" style="padding-bottom:0;">
+          <div class="tl-title" style="font-weight:400;font-size:16px;line-height:24px;color:var(--pri-text);">उस दिन नेट बॉक्स का ₹300 सिक्युरिटी फीस देना होता है</div>
+          <div style="margin-top:12px;">
+            <span style="display:inline-block;background:var(--pos-200);color:var(--pos-600);border-radius:8px;padding:4px 8px;font-size:12px;line-height:16px;font-weight:600;">नेट बॉक्स लौटाने पर ₹300 वापस मिल जाते है</span>
           </div>
         </div>
       </div>
     </div>
-    <div style="background:var(--s-subtle);padding:20px 16px;margin-top:8px;">
-      <div class="h-md" style="font-weight:400;line-height:1.45;">अब नेट चलेगा आपके हिसाब से -<br>1, 2, 7, 14 या 28 दिन का रिचार्ज करें।</div>
-      <button class="btn-link" style="margin-top:14px;">देखें कैसे? <span class="material-symbols-rounded ico-sm">chevron_right</span></button>
+  </div>
+  <div style="background:var(--bg-neutral-sec);padding:12px 16px;display:flex;flex-direction:column;gap:4px;">
+    <div class="ty-b1 c-pri">अब नेट चलेगा आपके हिसाब से - 1, 2, 7, 14 या 28 दिन का रिचार्ज करें।</div>
+    <div style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <span class="ty-b2 c-brand">देखें कैसे?</span>
+      <span class="material-symbols-rounded" style="font-size:14px;color:var(--icon-brand);">chevron_right</span>
     </div>
   </div>
-  <div class="btn-bar"><button class="btn btn-primary">विज़िट कन्फर्म करने के लिए फोन नंबर दें</button></div>
+  <div class="btn-bar">
+    <button class="wbtn wbtn-booking">विज़िट कन्फर्म करने के लिए फोन नंबर दें</button>
+  </div>
 ` });
